@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Paul Ocon | Creative Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --blue-deep: #050f2e;
+      --blue-dark: #0a1a4a;
+      --blue-mid: #0d2680;
+      --blue-bright: #1a47cc;
+      --blue-electric: #2563eb;
+      --blue-glow: #3b82f6;
+      --blue-light: #60a5fa;
+      --blue-pale: #bfdbfe;
+      --blue-icy: #dbeafe;
+      --cyan: #06b6d4;
+      --cyan-light: #67e8f9;
+      --white: #f0f6ff;
+      --grey: #94a3b8;
+      --card-bg: rgba(13, 38, 128, 0.18);
+      --glass: rgba(37, 99, 235, 0.10);
+      --border: rgba(96, 165, 250, 0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--blue-deep);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      pointer-events: none;
+    }
+    .cursor-dot {
+      width: 8px; height: 8px;
+      background: var(--cyan);
+      border-radius: 50%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--blue-glow);
+      border-radius: 50%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      transition: all 0.18s ease;
+      opacity: 0.7;
+    }
+
+    /* BG noise/grid */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 70% 20%, rgba(37,99,235,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 10% 80%, rgba(6,182,212,0.13) 0%, transparent 70%),
+        linear-gradient(rgba(96,165,250,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(96,165,250,0.035) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+      pointer-events: none;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 4rem;
+      backdrop-filter: blur(18px);
+      background: rgba(5,15,46,0.75);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem; font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, var(--blue-light), var(--cyan));
+      
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--cyan); -webkit-text-fill-color: var(--cyan); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.88rem; font-weight: 500; letter-spacing: 0.05em;
+      color: var(--blue-pale); text-decoration: none; text-transform: uppercase;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1.5px;
+      background: var(--cyan);
+      transition: width 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--cyan-light); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* HERO */
+    #home {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 8rem 4rem 4rem;
+      position: relative; z-index: 1;
+    }
+    .hero-content { max-width: 700px; }
+    .hero-eyebrow {
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--cyan);
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 0.7s 0.1s forwards;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block; width: 32px; height: 1px; background: var(--cyan);
+    }
+    .hero-name {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 800; line-height: 1.02;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.3rem;
+      opacity: 0; animation: fadeUp 0.7s 0.2s forwards;
+    }
+    .hero-name .highlight {
+      background: linear-gradient(90deg, var(--blue-glow), var(--cyan-light));
+    }
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 500; color: var(--blue-pale);
+      margin-bottom: 1.8rem;
+      opacity: 0; animation: fadeUp 0.7s 0.3s forwards;
+    }
+    .hero-bio {
+      font-size: 1.05rem; line-height: 1.75;
+      color: var(--grey); max-width: 520px;
+      margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp 0.7s 0.4s forwards;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.7s 0.5s forwards;
+    }
+    .btn-primary {
+      padding: 0.85rem 2rem; border-radius: 4px;
+      background: var(--blue-electric); color: #fff;
+      font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.9rem;
+      letter-spacing: 0.04em; text-decoration: none;
+      border: none; cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 24px rgba(37,99,235,0.4);
+    }
+    .btn-primary:hover { background: var(--blue-glow); box-shadow: 0 0 40px rgba(59,130,246,0.6); transform: translateY(-1px); }
+    .btn-outline {
+      padding: 0.85rem 2rem; border-radius: 4px;
+      background: transparent; color: var(--blue-light);
+      font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.9rem;
+      letter-spacing: 0.04em; text-decoration: none;
+      border: 1px solid var(--border); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { background: var(--glass); border-color: var(--blue-glow); color: var(--cyan-light); }
+
+    /* Hero orb */
+    .hero-orb {
+      position: absolute; right: 6%; top: 50%; transform: translateY(-50%);
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, var(--blue-bright), var(--blue-deep));
+      border: 1px solid rgba(96,165,250,0.3);
+      overflow: hidden;
+      box-shadow: 0 0 80px rgba(37,99,235,0.35), 0 0 160px rgba(6,182,212,0.15);
+      opacity: 0; animation: fadeIn 1s 0.6s forwards;
+    }
+    .hero-orb img {
+      width: 100%; height: 100%; object-fit: cover; opacity: 0.85;
+    }
+    .hero-orb-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0.75rem;
+    }
+    .hero-orb-placeholder .avatar-icon {
+      font-size: 6rem; opacity: 0.5;
+    }
+    .hero-orb-placeholder p {
+      font-size: 0.8rem; color: var(--blue-pale); opacity: 0.7; text-align: center; padding: 0 1rem;
+    }
+
+    /* SECTION SHARED */
+    section { position: relative; z-index: 1; padding: 7rem 4rem; }
+    .section-label {
+      font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--cyan); font-weight: 600;
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .section-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--cyan); }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 1rem; line-height: 1.1;
+    }
+    .section-title .accent {
+      background: linear-gradient(90deg, var(--blue-glow), var(--cyan));
+     
+    }
+    .section-divider {
+      width: 48px; height: 2px;
+      background: linear-gradient(90deg, var(--blue-electric), var(--cyan));
+      margin-bottom: 3rem; border-radius: 2px;
+    }
+
+    /* LOGO */
+    .logo-section {
+      border-top: 1px solid var(--border);
+      padding-top: 3rem;
+      display: flex; align-items: center; gap: 3rem; flex-wrap: wrap;
+    }
+    .logo-mark {
+      width: 110px; height: 110px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--blue-mid), var(--blue-electric));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800;
+      color: #fff; letter-spacing: -0.05em;
+      box-shadow: 0 0 40px rgba(37,99,235,0.4);
+      flex-shrink: 0;
+    }
+    .logo-desc { max-width: 360px; }
+    .logo-desc h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .logo-desc p { font-size: 0.95rem; line-height: 1.7; color: var(--grey); }
+
+    /* GALLERY */
+    #works { background: linear-gradient(180deg, transparent, rgba(13,38,128,0.12), transparent); }
+    .works-tabs {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+    .tab-btn {
+      padding: 0.5rem 1.3rem; border-radius: 100px;
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.04em;
+      cursor: pointer; border: 1px solid var(--border);
+      background: transparent; color: var(--grey);
+      transition: all 0.2s;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--blue-electric); color: #fff; border-color: var(--blue-electric);
+      box-shadow: 0 0 16px rgba(37,99,235,0.35);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .gallery-card {
+      border-radius: 12px; overflow: hidden;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      position: relative;
+    }
+    .gallery-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(96,165,250,0.4);
+      box-shadow: 0 12px 40px rgba(37,99,235,0.2);
+    }
+    .gallery-card-img {
+      width: 100%; aspect-ratio: 16/10;
+      object-fit: cover;
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      color: rgba(96,165,250,0.3);
+      overflow: hidden;
+    }
+    .gallery-card-img img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-card-img iframe {
+      width: 100%; height: 100%; border: none;
+      pointer-events: none;
+    }
+    .gallery-card-body { padding: 1.2rem 1.4rem; }
+    .gallery-card-tag {
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--cyan); font-weight: 600; margin-bottom: 0.4rem;
+    }
+    .gallery-card-title {
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .gallery-card-desc { font-size: 0.85rem; color: var(--grey); line-height: 1.6; }
+    .gallery-card-link {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      margin-top: 0.8rem; font-size: 0.82rem; color: var(--blue-light);
+      text-decoration: none; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .gallery-card-link:hover { color: var(--cyan-light); }
+
+    /* ABOUT */
+   
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1.6fr; gap: 4rem; align-items: start;
+    }
+    .about-photo-wrap {
+      position: relative;
+    }
+    .about-photo {
+      width: 100%; aspect-ratio: 3/4;
+      border-radius: 16px; overflow: hidden;
+      background: linear-gradient(135deg, var(--blue-mid), var(--blue-dark));
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; color: rgba(96,165,250,0.2);
+    }
+    .about-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .about-photo-accent {
+      position: absolute; bottom: -16px; right: -16px;
+      width: 80px; height: 80px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue-electric), var(--cyan));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #fff; text-align: center; padding: 0.5rem;
+      box-shadow: 0 0 32px rgba(37,99,235,0.5);
+    }
+    .about-text h3 {
+      font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 700;
+      margin-bottom: 1rem; color: var(--blue-icy);
+    }
+    .about-text p { font-size: 1rem; line-height: 1.8; color: var(--grey); margin-bottom: 1.2rem; }
+    .about-text p strong { color: var(--blue-pale); font-weight: 500; }
+    .skills-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem;
+    }
+    .skill-pill {
+      padding: 0.4rem 1rem; border-radius: 100px;
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.04em;
+      border: 1px solid var(--border); color: var(--blue-pale);
+      background: var(--glass);
+    }
+    .vision-card {
+      margin-top: 2rem; padding: 1.5rem 1.8rem;
+      border-radius: 12px;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-left: 3px solid var(--cyan);
+    }
+    .vision-card p {
+      font-size: 1rem; font-style: italic; line-height: 1.7;
+      color: var(--blue-pale); margin: 0;
+    }
+
+    /* CONTACT */
+    #contact { border-top: 1px solid var(--border); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+    .contact-left h3 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .contact-left p { color: var(--grey); line-height: 1.8; font-size: 0.97rem; }
+    .contact-links { margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+    .contact-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.4rem; border-radius: 10px;
+      background: var(--card-bg); border: 1px solid var(--border);
+      text-decoration: none; color: inherit;
+      transition: all 0.2s;
+    }
+    .contact-item:hover {
+      border-color: rgba(96,165,250,0.4);
+      background: rgba(37,99,235,0.15);
+      transform: translateX(4px);
+    }
+    .contact-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: var(--blue-mid); display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .contact-item-text .label { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan); font-weight: 600; }
+    .contact-item-text .value { font-size: 0.92rem; color: var(--blue-pale); font-weight: 500; }
+    .contact-right {
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .info-card {
+      padding: 1.5rem 1.8rem; border-radius: 12px;
+      background: var(--card-bg); border: 1px solid var(--border);
+    }
+    .info-card h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--blue-icy); margin-bottom: 0.5rem; }
+    .info-card p { font-size: 0.88rem; color: var(--grey); line-height: 1.65; }
+
+    /* FOOTER */
+    footer {
+      text-align: center; padding: 2.5rem 4rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem; color: var(--grey); letter-spacing: 0.05em;
+      position: relative; z-index: 1;
+    }
+    footer span { color: var(--blue-light); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      section { padding: 5rem 2rem; }
+      #home { padding: 7rem 2rem 4rem; }
+      .hero-orb { display: none; }
+      .about-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .nav-links { gap: 1.4rem; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--blue-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--blue-mid); border-radius: 4px; }
+
+    /* Glow lines */
+    .glow-line {
+      position: absolute; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--blue-electric), transparent);
+      opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+
+  <body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#home" class="nav-logo">P<span>.</span>Ocon</a>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#works">Works</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Free Elec 1 Portfolio</div>
+      <h1 class="hero-name">Paul <span class="highlight">Ocon</span></h1>
+      <p class="hero-title">Graphic Designer & Visual Creator</p>
+      <p class="hero-bio">
+        A passionate creative from the Philippines exploring the intersection of design, motion, and storytelling.
+      </p>
+      <div class="hero-actions">
+        <a href="#works" class="btn-primary">View My Works</a>
+        <a href="#contact" class="btn-outline">Get In Touch</a>
+      </div>
+    </div>
+
+    <div class="hero-orb">
+      <img src="profile.jpg" alt="My Profile Photo" class="profile-photo">
+    </div>
+  </section>   <!-- ✅ THIS CLOSING TAG WAS MISSING -->
+
+  <!-- PERSONAL LOGO STRIP -->
+ <div style="padding: 0 4rem 4rem; position: relative; z-index: 1;">
+  <div class="logo-section reveal">
+
+    <div class="logo-mark">
+      <img src="Ocon_Week4_Logo(1).png" alt="My Picture">
+    </div>
+
+    <div class="logo-desc">
+      <h3>Personal Logo</h3>
+      <p>My personal profile picture.</p>
+    </div>
+
+  </div>
+</div>
+
+  
+
+  <!-- WORKS -->
+  <section id="works">
+    <div class="section-label">Gallery</div>
+    <h2 class="section-title">My <span class="accent">Works</span></h2>
+    <div class="section-divider"></div>
+
+    <div class="works-tabs">
+      <button class="tab-btn active" onclick="filterGallery('all', this)">All Works</button>
+      <button class="tab-btn" onclick="filterGallery('design', this)">Design Challenge</button>
+      <button class="tab-btn" onclick="filterGallery('quote', this)">Quote Design</button>
+      <button class="tab-btn" onclick="filterGallery('animation', this)">Animation</button>
+    </div>
+
+    <div class="gallery-grid" id="gallery">
+
+      <!-- Social Media Poster -->
+      <div class="gallery-card reveal" data-cat="design">
+        <div class="gallery-card-img">
+          <img src="https://drive.google.com/thumbnail?id=1vbjDElHDovPL7W0uk4KqJ6sc-kGE8Nqy&sz=w400" alt="Social Media Poster" onerror="this.parentElement.innerHTML='🖼️'"/>
+        </div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-tag">4-Week Design Challenge</div>
+          <div class="gallery-card-title">Social Media Poster</div>
+          <p class="gallery-card-desc">A visually compelling social media poster designed for digital platforms. Focused on hierarchy, color, and engagement.</p>
+          <a href="https://drive.google.com/drive/folders/1vbjDElHDovPL7W0uk4KqJ6sc-kGE8Nqy?usp=drive_link" target="_blank" class="gallery-card-link">View in Drive ↗</a>
+        </div>
+      </div>
+
+      <!-- Infographic -->
+      <div class="gallery-card reveal" data-cat="design">
+        <div class="gallery-card-img" style="font-size:3rem; color: rgba(96,165,250,0.3);">📊</div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-tag">4-Week Design Challenge</div>
+          <div class="gallery-card-title">Infographic</div>
+          <p class="gallery-card-desc">Data-driven visual communication piece. Transforms complex information into digestible, beautifully structured visuals.</p>
+          <a href="https://drive.google.com/drive/folders/1vbjDElHDovPL7W0uk4KqJ6sc-kGE8Nqy?usp=drive_link" target="_blank" class="gallery-card-link">View in Drive ↗</a>
+        </div>
+      </div>
+
+      <!-- Personal Logo Design -->
+      <div class="gallery-card reveal" data-cat="design">
+        <div class="gallery-card-img" style="background: linear-gradient(135deg, #0d2680, #1a47cc);">
+          <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;color:rgba(255,255,255,0.9);letter-spacing:-0.05em;">PO</div>
+        </div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-tag">4-Week Design Challenge</div>
+          <div class="gallery-card-title">Personal Logo Design</div>
+          <p class="gallery-card-desc">My personal brand identity — a monogram that captures my design philosophy through form, color, and typographic choice.</p>
+          <a href="https://drive.google.com/drive/folders/1vbjDElHDovPL7W0uk4KqJ6sc-kGE8Nqy?usp=drive_link" target="_blank" class="gallery-card-link">View in Drive ↗</a>
+        </div>
+      </div>
+
+      <!-- Quote Design -->
+      <div class="gallery-card reveal" data-cat="quote">
+        <div class="gallery-card-img" style="background: linear-gradient(135deg, #050f2e, #0a1a4a);">
+          <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:1.5rem;text-align:center;">
+            <p style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:600;color:rgba(191,219,254,0.8);font-style:italic;line-height:1.6;">"Design is not just what it looks like — it's how it works."</p>
+          </div>
+        </div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-tag">Quote Design Activity</div>
+          <div class="gallery-card-title">Quote Design</div>
+          <p class="gallery-card-desc">Typography-driven poster combining a meaningful quote with considered layout, negative space, and visual tension.</p>
+          <a href="https://drive.google.com/drive/folders/1vbjDElHDovPL7W0uk4KqJ6sc-kGE8Nqy?usp=drive_link" target="_blank" class="gallery-card-link">View in Drive ↗</a>
+        </div>
+      </div>
+
+      <!-- Motion Tween Animation -->
+      <div class="gallery-card reveal" data-cat="animation">
+        <div class="gallery-card-img" style="font-size:3rem; color: rgba(96,165,250,0.3);">🎬</div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-tag">Animation Exercise</div>
+          <div class="gallery-card-title">Motion Tween Animation</div>
+          <p class="gallery-card-desc">Explores motion tween techniques in Adobe Animate — smooth transitions and object movement across keyframes.</p>
+          <a href="https://drive.google.com/drive/folders/1vbjDElHDovPL7W0uk4KqJ6sc-kGE8Nqy?usp=drive_link" target="_blank" class="gallery-card-link">View Animation ↗</a>
+        </div>
+      </div>
+
+      <!-- Frame-by-Frame Animation -->
+      <div class="gallery-card reveal" data-cat="animation">
+        <div class="gallery-card-img" style="font-size:3rem; color: rgba(6,182,212,0.35);">🎞️</div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-tag">Animation Exercise</div>
+          <div class="gallery-card-title">Frame-by-Frame Animation</div>
+          <p class="gallery-card-desc">Hand-crafted frame-by-frame animation demonstrating control over timing, anticipation, and character movement.</p>
+          <a href="https://drive.google.com/drive/folders/1vbjDElHDovPL7W0uk4KqJ6sc-kGE8Nqy?usp=drive_link" target="_blank" class="gallery-card-link">View Animation ↗</a>
+        </div>
+      </div>
+
+      <!-- Shape/Classic Tween -->
+      <div class="gallery-card reveal" data-cat="animation">
+        <div class="gallery-card-img" style="font-size:3rem; color: rgba(96,165,250,0.3);">✨</div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-tag">Animation Exercise</div>
+          <div class="gallery-card-title">Shape & Classic Tween</div>
+          <p class="gallery-card-desc">Shape morphing and classic tween exercises — exploring how forms evolve fluidly through animation.</p>
+          <a href="https://drive.google.com/drive/folders/1vbjDElHDovPL7W0uk4KqJ6sc-kGE8Nqy?usp=drive_link" target="_blank" class="gallery-card-link">View Animation ↗</a>
+        </div>
+      </div>
+
+      <!-- Drive Folder Link Card -->
+      <div class="gallery-card reveal" data-cat="all" style="border: 1px dashed rgba(96,165,250,0.3); background: rgba(37,99,235,0.06);">
+        <div class="gallery-card-img" style="font-size:3rem; color: rgba(96,165,250,0.4);">📁</div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-tag">All Works</div>
+          <div class="gallery-card-title">Complete Works Folder</div>
+          <p class="gallery-card-desc">Access all project files, source files, and high-resolution exports via my Google Drive folder.</p>
+          <a href="https://drive.google.com/drive/folders/1vbjDElHDovPL7W0uk4KqJ6sc-kGE8Nqy?usp=drive_link" target="_blank" class="gallery-card-link">Open Google Drive ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">About Me</div>
+    <h2 class="section-title">The <span class="accent">Person</span> Behind the Work</h2>
+    <div class="section-divider"></div>
+
+    <div class="about-grid">
+  <div class="about-photo-wrap reveal">
+    <div class="about-photo">
+      <img src="profile.jpg" alt="My Photo" class="about-img">
+    </div>
+
+    <div class="about-photo-accent">
+      Free<br/>Elec 1<br/>2026
+    </div>
+  </div>
+</div>
+
+
+      <div class="about-text reveal">
+        <h3>Hey, I'm Paul! 👋</h3>
+        <p>
+          I'm a <strong>Filipino student and aspiring creative designer</strong> with a passion for visual communication, digital art, and motion design. Currently enrolled in Free Elec 1 (Introduction to Graphic Design), I've been sharpening my eye for design and exploring the tools that turn ideas into visual experiences.
+        </p>
+        <p>
+          My journey into design started with curiosity — wondering how the visuals we see every day are made, and what makes some designs truly stand out. Through this course, I've worked on posters, infographics, logo design, and animation, each project pushing my skills further.
+        </p>
+        <p>
+          Beyond the classroom, I'm someone who appreciates <strong>storytelling through imagery</strong>, believes in the power of clean, intentional design, and is always looking to grow — whether that's through new tools, new styles, or new challenges.
+        </p>
+
+        <div class="skills-list">
+          <span class="skill-pill">Adobe Photoshop</span>
+          <span class="skill-pill">Adobe Illustrator</span>
+          <span class="skill-pill">Adobe Animate</span>
+          <span class="skill-pill">Canva</span>
+          <span class="skill-pill">Typography</span>
+          <span class="skill-pill">Logo Design</span>
+          <span class="skill-pill">Motion Graphics</span>
+          <span class="skill-pill">Infographic Design</span>
+        </div>
+
+        <div class="vision-card">
+          <p>"My creative vision is to design with purpose — to create visuals that don't just look good, but say something meaningful. I want to use design as a bridge between ideas and people."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">Contact</div>
+    <h2 class="section-title">Let's <span class="accent">Connect</span></h2>
+    <div class="section-divider"></div>
+
+    <div class="contact-grid">
+      <div class="contact-left reveal">
+        <h3>Reach out anytime</h3>
+        <p>Whether it's a collaboration, a question about my work, or just to say hi — feel free to connect with me through any of these platforms. I'm always open to creative conversations.</p>
+
+        <div class="contact-links">
+
+          <a href="https://www.facebook.com/paul.ocon.927184" target="_blank" class="contact-item">
+            <div class="contact-icon">📘</div>
+            <div class="contact-item-text">
+              <div class="label">Facebook</div>
+              <div class="value">Paul Ocon</div>
+            </div>
+          </a>
+
+          <a href="https://www.instagram.com/paul.ocon.065" target="_blank" class="contact-item">
+            <div class="contact-icon">📸</div>
+            <div class="contact-item-text">
+              <div class="label">Instagram</div>
+              <div class="value">@paul.ocon.065</div>
+            </div>
+          </a>
+
+          <a href="https://www.linkedin.com/in/paul-ocon" target="_blank" class="contact-item">
+            <div class="contact-icon">💼</div>
+            <div class="contact-item-text">
+              <div class="label">LinkedIn</div>
+              <div class="value">Paul Ocon</div>
+            </div>
+          </a>
+
+          <a href="https://drive.google.com/drive/folders/1vbjDElHDovPL7W0uk4KqJ6sc-kGE8Nqy?usp=drive_link" target="_blank" class="contact-item">
+            <div class="contact-icon">📁</div>
+            <div class="contact-item-text">
+              <div class="label">Portfolio Drive</div>
+              <div class="value">View All Works</div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <div class="contact-right reveal">
+        <div class="info-card">
+          <h4>📍 Location</h4>
+          <p>Philippines — available for digital collaborations and creative projects anywhere.</p>
+        </div>
+        <div class="info-card">
+          <h4>🎓 Course</h4>
+          <p>Free Elec 1 — Introduction to Graphic Design. Currently building a foundation in visual communication, branding, and motion design.</p>
+        </div>
+        <div class="info-card">
+          <h4>🎨 Creative Goals</h4>
+          <p>To continuously grow as a visual storyteller and eventually work on projects that make a meaningful visual impact — locally and globally.</p>
+        </div>
+        <div class="info-card" style="border-left: 3px solid var(--cyan);">
+          <h4>💡 Open To</h4>
+          <p>Feedback on my portfolio, design collaborations, academic projects, and connecting with fellow creatives.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 <span>Paul Ocon</span> · Free Elec 1 Portfolio · Designed with intention.</p>
+  </footer>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const dot = cursor.querySelector('.cursor-dot');
+    const ring = cursor.querySelector('.cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.left = mx + 'px'; dot.style.top = my + 'px'; });
+    function animRing() {
+      rx += (mx - rx) * 0.13; ry += (my - ry) * 0.13;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.style.transform = 'translate(-50%,-50%) scale(1.5)'; ring.style.opacity = '0.4'; });
+      el.addEventListener('mouseleave', () => { ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.opacity = '0.7'; });
+    });
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => obs.observe(r));
+
+    // Gallery filter
+    function filterGallery(cat, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.gallery-card').forEach(card => {
+        const c = card.dataset.cat;
+        card.style.display = (cat === 'all' || c === cat || c === 'all') ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
